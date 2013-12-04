@@ -43,7 +43,7 @@ class Data{
    */
   var $data;
 
-  const ERROR_NOT_FOUND_PATH = "ƒtƒ@ƒCƒ‹‚ª‘¶Ý‚µ‚Ü‚¹‚ñ";
+  const ERROR_NOT_FOUND_PATH = "ãƒ•ã‚¡ã‚¤ãƒ«ãŒå­˜åœ¨ã—ã¾ã›ã‚“";
 
   /**
    * none
