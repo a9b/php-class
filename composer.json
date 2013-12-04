@@ -1,21 +1,21 @@
 {
-    "name": "a9b/php-class",
-    "type": "library",
-    "description": "PHP simple class",
-    "keywords": ["simple","class"],
-    "homepage": "http://github.com/a9b/php-class",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "a9b",
-            "email": "a9b@gmail.com",
-            "homepage": "http://a9b.jp/"
-        }
-    ],
+  "name": "a9b/php-class",
+  "type": "library",
+  "description": "PHP simple class",
+  "keywords": ["simple","class"],
+  "homepage": "http://github.com/a9b/php-class",
+  "license": "MIT",
+  "authors": [
+  {
+    "name": "a9b",
+    "email": "a9b@gmail.com",
+    "homepage": "http://a9b.jp/"
+  }
+  ],
 
-    "autoload": {
-        "psr-0": {
-            "Data": "class/"
-        }
+  "autoload": {
+    "psr-0": {
+      "Data": "class/"
     }
+  }
 }
