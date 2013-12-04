@@ -1,0 +1,271 @@
+<?php 
+/**
+ * none
+ *
+ * @version  1.00
+ * @since  2013/12/03 17:55:13
+ * @author  seki
+ * @copyright  (C)2013 seki All Rights Reserved
+ * @package  none
+ */
+class Data{
+
+  /** 
+   * none
+   * @param string 
+   * @access private 
+   */
+  var $dir;
+
+  /** 
+   * none
+   * @param string 
+   * @access private 
+   */
+  var $path;
+
+  /** 
+   * none
+   * @param array() 
+   * @access private 
+   */
+  var $data;
+
+  const ERROR_NOT_FOUND_PATH = "ƒtƒ@ƒCƒ‹‚ª‘¶Ý‚µ‚Ü‚¹‚ñ";
+
+  /**
+   * none
+   * @since 2013/12/03 17:57:53
+   * @author     seki
+   * @param      @string $dir  string 
+   * @return     @object
+   */ 
+  public function __construct($dir)
+  {
+
+    $this->dir = $dir;
+    if (!file_exists($this->dir))
+    {
+      $this->_error(self::ERROR_NOT_FOUND_PATH,$this->dir);
+    }//if
+
+    if (substr($this->dir,-1) !== "/")
+    {
+      $this->dir . "/";
+    }//if
+
+    return $this;
+  }//function
+
+
+  /**
+   * none
+   * @since 2013/12/03 17:55:59
+   * @author     seki
+   * @param      @string $file  filename
+   * @param      @mixed $option  option fileget 
+   * @return     @mixed boolean
+   */ 
+  public function set($file,$options=null)
+  {
+    $this->_setFile($file);
+    $this->data = file_get_contents($this->path);
+
+    # encoding
+    if ($options["encode"])
+    {
+      $this->encode($this->data,$options["encode"]);
+    }//if
+
+    # return_type
+    if ("array" === $options["return_type"])
+    {
+      $this->to_array($this->data);
+    }//if
+
+    return $this;
+  }//function
+
+
+  /**
+   * none
+   * @since 2013/12/03 17:55:59
+   * @author     seki
+   * @param      @string $file  filename
+   * @param      @mixed $option  option fileget 
+   * @return     @mixed boolean
+   */ 
+  public function setCsv($file, $options=null, $delimiter = ",")
+  {
+    $options["return_type"] = "array";
+    $file = str_replace(".csv","",$file) . ".csv";
+    $this->set($file, $options);
+
+    $t = array();
+    foreach ($this->data as $k=>$v)
+    {
+      $t[] = $this->_to_array($v,$delimiter);
+    }//foreach
+    $this->data = $t;
+
+    return $this;
+  }//function
+
+
+  /**
+   * none
+   * @since 2013/12/03 17:55:31
+   * @author     seki
+   * @param      @string $str  string 
+   * @return     @mixed  array() or false(boolean)
+   */ 
+  public function get()
+  {
+    if (is_null($this->data))
+    {
+      return false;
+    }//if
+
+    return $this->data;
+  }//function
+
+
+  /**
+   * It divides.
+   * @since 2013/12/03 18:59:19
+   * @author     seki
+   * @param      @mixed $mix  array or string 
+   * @return     @mixed  array()
+   */ 
+  public function to_array($mix = false, $delimiter="\n")
+  {
+    if (false === $mix)
+    {
+      $mix = $this->data;
+    }//if 
+
+    $this->data = $this->_to_array($mix,$delimiter);
+
+    return $this;
+  }//function
+
+
+  /**
+   * It divides. In arrangement, there is it recursively.
+   * @since 2013/12/03 18:59:19
+   * @author     seki
+   * @param      @mixed $mix  array or string 
+   * @return     @mixed  array()
+   */ 
+  public function _to_array($mix = false, $delimiter="\n")
+  {
+    if (is_array($mix))
+    {
+      foreach ($mix as $k=>$v)
+      {
+        $r[] = explode($delimiter, $v);
+      }//foreach
+    }
+    else
+    {
+      $r = explode($delimiter, $mix);
+    }//if
+
+    return $r;
+  }//function
+
+
+  /**
+   * none
+   * @since 2013/12/03 19:01:33
+   * @author     seki
+   * @param      @string $mix string or array() 
+   * @param      @string $to string 
+   * @param      @string $from string 
+   * @return     @mixed array() or string
+   */ 
+	public function encode($mix = false, $to="UTF-8", $from=null){
+    if (false === $mix)
+    {
+      $mix = $this->data;
+    }//if 
+
+    $this->data = $this->_encode($this->data, $to, $from);
+
+		return $this;
+	}//function
+
+
+ /**
+   * none
+   * @since 2013/12/03 19:45:49
+   * @author     seki
+   * @param      @string $mix string or array() 
+   * @param      @string $to string 
+   * @param      @string $from string 
+   * @return     @mixed array() or string
+  */ 
+  private function _encode($mix = false, $to="UTF-8", $from=null)
+  {
+
+		mb_language("Japanese");
+		$from_org = $from;
+		
+		if(is_array($mix)){
+			foreach($mix as $key => $val){
+			$from = $from_org;
+				if(is_array($val)){
+					$mix[$key] = $this->_encode($val,$to);
+				}else{
+					if(is_null($from)){$from=mb_detect_encoding($val);}
+					if($from != $to){$mix[$key]=mb_convert_encoding($val,$to,$from);}
+				}
+			}
+		}
+		else{
+			if(is_null($from)){$from=mb_detect_encoding($mix);}
+			$mix = mb_convert_encoding($mix,$to,$from);
+		}
+
+		return $mix;
+  }//function
+
+
+ /**
+   * none
+   * @since 2013/12/03 19:51:24
+   * @author     seki
+   * @param      @string $file string 
+   * @return     true
+  */ 
+  public function _setFile($file)
+  {
+    $this->path = $this->dir . $file;
+    if (!file_exists($this->path))
+    {
+      $this->_error(self::ERROR_NOT_FOUND_PATH,$this->path);
+    }//if
+
+    return true;
+  }//function
+
+
+  /**
+   * none
+   * @since 2013/12/03 18:01:51
+   * @author     seki
+   * @param      @string $str  string 
+   * @return     @mixed  array() or false(boolean)
+   */ 
+  private function _error($code,$str=null)
+  {
+    echo __FILE__;
+    echo ":";
+    echo __LINE__;
+    echo "\t";
+    echo $code;
+    echo $str;
+    exit;
+  }//function
+
+}
