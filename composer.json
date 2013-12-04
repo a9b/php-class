@@ -12,4 +12,10 @@
             "homepage": "http://a9b.jp/"
         }
     ]
+
+    "autoload": {
+        "psr-0": {
+            "Data": "class/"
+        }
+    }
 }
