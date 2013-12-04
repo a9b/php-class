@@ -1,13 +1,25 @@
 <?php 
 /**
- * none
+ * Data.class
  *
  * @version  1.00
  * @since  2013/12/03 17:55:13
  * @author  seki
  * @copyright  (C)2013 seki All Rights Reserved
  * @package  none
+ *
+ * @usage
+ * include_once("./Data.class");
+ * $file = new Data("./datasource/");
+ *  
+ * $options = array(
+ *   "encode"=>"UTF-8",
+ *   "return_type"=>"array",//string
+ * );
+ * $d = $file->setCSV("hoge",$options)->get();
+ * $d = $file->set("hoge.csv")->to_array()->to_array(false,",")->encode("UTF-8")->get();
  */
+
 class Data{
 
   /** 
@@ -42,7 +54,6 @@ class Data{
    */ 
   public function __construct($dir)
   {
-
     $this->dir = $dir;
     if (!file_exists($this->dir))
     {
@@ -66,7 +77,7 @@ class Data{
    * @param      @mixed $option  option fileget 
    * @return     @mixed boolean
    */ 
-  public function set($file,$options=null)
+  public function setFile($file,$options=null)
   {
     $this->_setFile($file);
     $this->data = file_get_contents($this->path);
@@ -92,21 +103,36 @@ class Data{
    * @since 2013/12/03 17:55:59
    * @author     seki
    * @param      @string $file  filename
-   * @param      @mixed $option  option fileget 
-   * @return     @mixed boolean
+   * @param      @mixed $options  option fileget 
+   * @param      @string $delimiter  divides 
+   * @return     @object
    */ 
   public function setCsv($file, $options=null, $delimiter = ",")
   {
     $options["return_type"] = "array";
     $file = str_replace(".csv","",$file) . ".csv";
-    $this->set($file, $options);
+    $this->setFile($file, $options);
+    $this->data = $this->_to_array($this->data,$delimiter);
 
-    $t = array();
-    foreach ($this->data as $k=>$v)
-    {
-      $t[] = $this->_to_array($v,$delimiter);
-    }//foreach
-    $this->data = $t;
+    return $this;
+  }//function
+
+
+  /**
+   * none
+   * @since 2013/12/03 17:55:58
+   * @author     seki
+   * @param      @string $file  filename
+   * @param      @mixed $options  option fileget 
+   * @param      @string $delimiter  divides 
+   * @return     @object
+   */ 
+  public function setTsv($file, $options=null, $delimiter = "\t")
+  {
+    $options["return_type"] = "array";
+    $file = str_replace(".tsv","",$file) . ".tsv";
+    $this->setFile($file, $options);
+    $this->data = $this->_to_array($this->data,$delimiter);
 
     return $this;
   }//function
@@ -157,7 +183,7 @@ class Data{
    * @param      @mixed $mix  array or string 
    * @return     @mixed  array()
    */ 
-  public function _to_array($mix = false, $delimiter="\n")
+  private function _to_array($mix = false, $delimiter="\n")
   {
     if (is_array($mix))
     {
@@ -207,7 +233,6 @@ class Data{
   */ 
   private function _encode($mix = false, $to="UTF-8", $from=null)
   {
-
 		mb_language("Japanese");
 		$from_org = $from;
 		
@@ -238,7 +263,7 @@ class Data{
    * @param      @string $file string 
    * @return     true
   */ 
-  public function _setFile($file)
+  private function _setFile($file)
   {
     $this->path = $this->dir . $file;
     if (!file_exists($this->path))
