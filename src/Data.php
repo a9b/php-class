@@ -9,7 +9,7 @@
  * @package  none
  *
  * @usage
- * include_once("./Data.class");
+ * include_once("./Data.php");
  * $file = new Data("./datasource/");
  *  
  * $options = array(
@@ -19,6 +19,7 @@
  * $d = $file->setCSV("hoge",$options)->get();
  * $d = $file->set("hoge.csv")->to_array()->to_array(false,",")->encode("UTF-8")->get();
  */
+namespace A9b;
 
 class Data{
 

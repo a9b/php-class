@@ -2,7 +2,7 @@
   "name": "a9b/php-class",
   "type": "library",
   "description": "PHP simple class",
-  "keywords": ["simple","class"],
+  "keywords": ["a9b","simple","class"],
   "homepage": "http://github.com/a9b/php-class",
   "license": "MIT",
   "authors": [
@@ -11,5 +11,11 @@
     "email": "a9b.word@gmail.com",
     "homepage": "http://a9b.jp/"
   }
-  ]
+  ],
+  "require": {
+    "php": ">=5.3.0",
+  },
+  "autoload": {
+    "psr-0": { "A9b\\": "" }
+  }
 }
