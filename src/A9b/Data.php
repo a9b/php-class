@@ -1,12 +1,14 @@
-<?php 
+<?php
+namespace A9b;
+
 /**
- * Data.class
+ * データユーティリティ
  *
- * @version  1.00
- * @since  2013/12/03 17:55:13
- * @author  a9b
+ * @version    1.00
+ * @since      2013/12/03 17:55:13
+ * @author     a9b
  * @copyright  (C)2013 a9b All Rights Reserved
- * @package  none
+ * @package    none
  *
  * @usage
  * include_once("./Data.php");
@@ -19,9 +21,8 @@
  * $d = $file->setCSV("hoge",$options)->get();
  * $d = $file->set("hoge.csv")->to_array()->to_array(false,",")->encode("UTF-8")->get();
  */
-namespace A9b;
 
-class Data{
+class Data {
 
   /** 
    * none
